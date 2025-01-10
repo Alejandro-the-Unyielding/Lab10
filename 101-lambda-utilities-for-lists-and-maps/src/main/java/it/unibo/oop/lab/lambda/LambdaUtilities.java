@@ -2,10 +2,12 @@ package it.unibo.oop.lab.lambda;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -47,6 +49,7 @@ public final class LambdaUtilities {
             l.add(op.apply(t));
         });
         return l;
+        
     }
 
     /**
@@ -65,7 +68,14 @@ public final class LambdaUtilities {
         /*
          * Suggestion: consider Optional.filter
          */
-        return emptyList();
+        
+        List<Optional<T>> l = new ArrayList<>(list.size());
+        list.forEach(t ->{
+            if(pre.test(t)) l.add(Optional.of(t));
+            else l.add(Optional.empty());
+        });
+        return l;
+
     }
 
     /**
@@ -80,11 +90,22 @@ public final class LambdaUtilities {
      * @return a map that groups into categories each element of the input list,
      *         based on the mapping done by the function
      */
+   
     public static <R, T> Map<R, Set<T>> group(final List<T> list, final Function<T, R> op) {
-        /*
-         * Suggestion: consider Map.merge
-         */
-        return emptyMap();
+
+        List<T> l = new ArrayList<>(list);
+        Map<R, Set<T>> map = new HashMap<>();
+        l.forEach(t -> {
+            R key = op.apply(t);
+            if(map.containsKey(key)) map.get(key).add(t);
+            else{
+                Set<T> set = new HashSet<>();
+                set.add(t);
+                map.put(key, set);
+            }
+        });
+        return map;
+
     }
 
     /**
@@ -105,7 +126,10 @@ public final class LambdaUtilities {
          *
          * Keep in mind that a map can be iterated through its forEach method
          */
-        return emptyMap();
+        Map<K,V> m = new HashMap<>();
+        map.forEach((k , v) -> {m.put(k, v.orElse(def.get()));});
+
+        return m;
     }
 
     /**
