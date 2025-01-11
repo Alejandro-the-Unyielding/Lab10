@@ -58,4 +58,9 @@ public final class PrintStreamView implements DrawNumberView {
         out.println(res.getDescription());
     }
 
+    @Override
+    public void displayError(final String message) {
+        out.println("[ERROR]: " + message);
+    }
+
 }
